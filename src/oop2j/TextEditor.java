@@ -4,112 +4,114 @@
  * and open the template in the editor.
  */
 package oop2j;
+
 import Command.ExitCommand;
+import Command.NewCommand;
 import Command.OpenCommand;
+import Command.SaveCommand;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileSystemView;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 /**
  *
  * @author okann
  */
-public class TextEditor extends JFrame implements ActionListener{
-   private static JTextArea area;
-   private static JFrame frame;
-   private static int returnValue = 0;
+public class TextEditor extends JFrame implements ActionListener {
 
-   public TextEditor() { run(); }
-   public void run() {
-   frame = new JFrame("Text Edit");
+    JTextArea textArea;
+    JScrollPane scrollPane;
+    JMenuBar menuBar;
+    JMenu fileMenu;
+    JMenu editMenu;
+    JMenuItem newItem;
+    JMenuItem openItem;
+    JMenuItem saveItem;
+    JMenuItem fixItem;
+    JMenuItem changeWordItem;
+    JMenuItem exitItem;
+    TextEditor(){
 
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-      Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setTitle("TextEditor");
+        this.setSize(600,600);
+        this.setLayout(new FlowLayout());
+        this.setLocationRelativeTo(null);
+        textArea = new JTextArea();
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(580,550));
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        //menu kisimi
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu("File");
+        newItem = new JMenuItem("New");
+        openItem = new JMenuItem("Open");
+        saveItem = new JMenuItem("Save");
+        exitItem = new JMenuItem("Exit");
+        newItem.addActionListener(this);
+        openItem.addActionListener(this);
+        saveItem.addActionListener(this);
+        exitItem.addActionListener(this);
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(exitItem);
+        editMenu = new JMenu("Edit");
+        fixItem = new JMenuItem("Fix Misspellings");
+        changeWordItem = new JMenuItem("Change word");
+        editMenu.add(fixItem);
+        editMenu.add(changeWordItem);
+        menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+
+
+        //--
+        this.setJMenuBar(menuBar);
+        this.add(scrollPane);
+        this.setVisible(true);
     }
-
-        // Set attributes of the app window
-    area = new JTextArea();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(area);
-    frame.setSize(640, 480);
-    frame.setVisible(true);
-
-        // Build the menu
-    JMenuBar menu_main = new JMenuBar();
-    JMenu menu_file = new JMenu("File");
-    JMenu edit_file = new JMenu("Edit");
-    JMenuItem menuitem_new = new JMenuItem("New");
-    JMenuItem menuitem_open = new JMenuItem("Open");
-    JMenuItem menuitem_save = new JMenuItem("Save");
-    JMenuItem menuitem_quit = new JMenuItem("Quit");
-    JMenuItem menuitem_fixmiss = new JMenuItem("Correct");
-    menuitem_new.addActionListener(this);
-    menuitem_open.addActionListener(this);
-    menuitem_save.addActionListener(this);
-    menuitem_quit.addActionListener(this);
-    menuitem_fixmiss.addActionListener(this);
-    menu_main.add(menu_file);
-    menu_main.add(edit_file);
-    menu_file.add(menuitem_new);
-    menu_file.add(menuitem_open);
-    menu_file.add(menuitem_save);
-    menu_file.add(menuitem_quit);
-    edit_file.add(menuitem_fixmiss);
-        frame.setJMenuBar(menu_main);
-    }
-
-@Override
-public void actionPerformed(ActionEvent e) {
-    JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-    jfc.setDialogTitle("Choose destination.");
-    jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-    String ae = e.getActionCommand();
-    if (ae.equals("Open")) {
-        returnValue = jfc.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-        OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(),area);
-        a.execute();
-    // SAVE
-    } else if (ae.equals("Save")) {
-        returnValue = jfc.showSaveDialog(null);
-        try {
-            File f = new File(jfc.getSelectedFile().getAbsolutePath());
-            FileWriter out = new FileWriter(f);
-            out.write(area.getText());
-            out.close();
-        } catch (FileNotFoundException ex) {
-            Component f = null;
-            JOptionPane.showMessageDialog(f,"File not found.");
-        } catch (IOException ex) {
-            Component f = null;
-            JOptionPane.showMessageDialog(f,"Error.");
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setDialogTitle("Choose destination.");
+        jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        if(e.getSource()==exitItem){
+            int returnValue = jfc.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                ExitCommand a = new ExitCommand(this,textArea,jfc.getSelectedFile().getAbsolutePath());
+                a.execute();
+            }    
+            ExitCommand a = new ExitCommand(this,textArea,jfc.getSelectedFile().getAbsolutePath());
+            a.execute();
+        }else if(e.getSource()==openItem){
+            int returnValue = jfc.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
+                this.setTitle(jfc.getSelectedFile().getName());
+                a.execute();
+            }    
+        }else if(e.getSource()==saveItem){
+            int returnValue = jfc.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+            SaveCommand a = new SaveCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
+            a.execute();
+            }
+        }else if(e.getSource()==newItem){
+            NewCommand a = new NewCommand(textArea);
+            a.execute();
         }
-    } else if (ae.equals("New")) {
-        area.setText("");
-    } else if (ae.equals("Quit")) { 
-        returnValue = jfc.showSaveDialog(null);
-        ExitCommand a = new ExitCommand(frame,area,jfc.getSelectedFile().getAbsolutePath());
-        a.execute();
     }
-  }
-}
+ }
 
-}
