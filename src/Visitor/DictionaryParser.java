@@ -39,6 +39,7 @@ public class DictionaryParser extends CheckSpelling {
                    
                     parsed.put(tmp2, new RangedWords(dictWords.toArray()));
                     tmp2 = tmp.charAt(0);
+                    dictWords.clear();
                     
                 }else{
                 dictWords.add(tmp);
@@ -48,6 +49,7 @@ public class DictionaryParser extends CheckSpelling {
             }
         
         }
+    parsed.put(tmp2, new RangedWords(dictWords.toArray()));    
     return parsed;
     }
 }
