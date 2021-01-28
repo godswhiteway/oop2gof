@@ -11,21 +11,19 @@ import Command.InsertCommand;
 import Command.NewCommand;
 import Command.OpenCommand;
 import Command.SaveCommand;
-import State.Observer;
+import Memento.CareTaker;
+import Memento.Originator;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -37,6 +35,8 @@ import javax.swing.filechooser.FileSystemView;
  */
 public class TextEditor extends JFrame implements ActionListener,KeyListener {
     CommandsInvoker stacks = new CommandsInvoker(); 
+    Originator originator = new Originator();
+    CareTaker careTaker = new CareTaker();
     JTextArea textArea;
     JScrollPane scrollPane;
     JMenuBar menuBar;
@@ -51,8 +51,6 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
     JMenuItem exitItem;
     JMenuItem takesnapshotItem;
     JMenuItem restoresnapshotItem;
-    JMenuItem proceedItem;    
-    JPopupMenu popupMenu;
     TextEditor(){
        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,8 +95,6 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(snapshotMenu);
-        proceedItem = new JMenuItem("OK");
-        popupMenu = new JPopupMenu("Restore From Snapshot");
         //--
         this.setJMenuBar(menuBar);
         this.add(scrollPane);
@@ -124,6 +120,9 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
                 OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
                 this.setTitle(jfc.getSelectedFile().getName());
                 stacks.execute(a);
+                originator.setState(textArea.getText());
+                careTaker.add(originator.saveStateToMemento());
+
             }    
         }else if(e.getSource()==saveItem){
             int returnValue = jfc.showOpenDialog(null);
@@ -136,9 +135,13 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
             stacks.execute(a);
 
         }else if(e.getSource()==takesnapshotItem){
-            
+            originator.setState(textArea.getText());
+            careTaker.add(originator.saveStateToMemento());
+
+
         }else if(e.getSource()==restoresnapshotItem){
-            popupMenu.setVisible(true);
+                originator.getStateFromMemento(careTaker.get(0));
+                textArea.setText(originator.getState());
         }
     }
 

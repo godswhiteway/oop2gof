@@ -5,6 +5,7 @@
  */
 package Memento;
 
+import javax.swing.JTextArea;
 import javax.swing.text.Document;
 
 /**
@@ -12,13 +13,13 @@ import javax.swing.text.Document;
  * @author okann
  */
 public class Originator {
-   private Document state;
+   private String state;
 
-   public void setState(Document state){
+   public void setState(String state){
       this.state = state;
    }
 
-   public Document getState(){
+   public String getState(){
       return state;
    }
 

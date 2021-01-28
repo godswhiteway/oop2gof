@@ -1,17 +1,17 @@
 
 package Memento;
 
-import java.util.ArrayList;
+import javax.swing.JTextArea;
 import javax.swing.text.Document;
 
 public class Memento {
-   private Document doc;
+   private String doc;
 
-   public Memento(Document state){
+   public Memento(String state){
       this.doc = state;
    }
 
-   public Document getState(){
+   public String getState(){
       return doc;
    }	
 }
