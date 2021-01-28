@@ -5,7 +5,9 @@
  */
 package oop2j;
 
+import Command.CommandsInvoker;
 import Command.ExitCommand;
+import Command.InsertCommand;
 import Command.NewCommand;
 import Command.OpenCommand;
 import Command.SaveCommand;
@@ -13,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -27,8 +31,8 @@ import javax.swing.filechooser.FileSystemView;
  *
  * @author okann
  */
-public class TextEditor extends JFrame implements ActionListener {
-
+public class TextEditor extends JFrame implements ActionListener,KeyListener {
+    CommandsInvoker stacks = new CommandsInvoker(); 
     JTextArea textArea;
     JScrollPane scrollPane;
     JMenuBar menuBar;
@@ -40,18 +44,20 @@ public class TextEditor extends JFrame implements ActionListener {
     JMenuItem fixItem;
     JMenuItem changeWordItem;
     JMenuItem exitItem;
+    JMenuItem undoItem;
+    JMenuItem redoItem;
     TextEditor(){
-
+       
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("TextEditor");
-        this.setSize(600,600);
+        this.setSize(800,600);
         this.setLayout(new FlowLayout());
         this.setLocationRelativeTo(null);
         textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(580,550));
+        scrollPane.setPreferredSize(new Dimension(780,550));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //menu kisimi
         menuBar = new JMenuBar();
@@ -64,6 +70,7 @@ public class TextEditor extends JFrame implements ActionListener {
         openItem.addActionListener(this);
         saveItem.addActionListener(this);
         exitItem.addActionListener(this);
+        textArea.addKeyListener(this);
         fileMenu.add(newItem);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
@@ -71,8 +78,14 @@ public class TextEditor extends JFrame implements ActionListener {
         editMenu = new JMenu("Edit");
         fixItem = new JMenuItem("Fix Misspellings");
         changeWordItem = new JMenuItem("Change word");
+        undoItem = new JMenuItem("Undo");
+        redoItem = new JMenuItem("Redo");
+        undoItem.addActionListener(this);
+        redoItem.addActionListener(this);
         editMenu.add(fixItem);
         editMenu.add(changeWordItem);
+        editMenu.add(undoItem);
+        editMenu.add(redoItem);
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
 
@@ -81,9 +94,12 @@ public class TextEditor extends JFrame implements ActionListener {
         this.setJMenuBar(menuBar);
         this.add(scrollPane);
         this.setVisible(true);
-    }
+            
+    }            
+    
     @Override
     public void actionPerformed(ActionEvent e) {
+    
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Choose destination.");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -91,27 +107,57 @@ public class TextEditor extends JFrame implements ActionListener {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 ExitCommand a = new ExitCommand(this,textArea,jfc.getSelectedFile().getAbsolutePath());
-                a.execute();
+                stacks.execute(a);
             }    
-            ExitCommand a = new ExitCommand(this,textArea,jfc.getSelectedFile().getAbsolutePath());
-            a.execute();
         }else if(e.getSource()==openItem){
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
                 this.setTitle(jfc.getSelectedFile().getName());
-                a.execute();
+                stacks.execute(a);
             }    
         }else if(e.getSource()==saveItem){
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
             SaveCommand a = new SaveCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
-            a.execute();
+            stacks.execute(a);
             }
         }else if(e.getSource()==newItem){
             NewCommand a = new NewCommand(textArea);
-            a.execute();
+            stacks.execute(a);
+        }else if(e.getSource()==undoItem){
+            stacks.undo();
+        }else if(e.getSource()==redoItem){
+            stacks.redo();
         }
     }
- }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        String a = "";
+        if(e.getKeyChar() == ' '){
+            InsertCommand c = new InsertCommand(a,textArea);
+            a = "";
+            stacks.execute(c);
+        }else{
+            a += e.getKeyChar();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if ((e.getKeyCode() == KeyEvent.VK_Z) && (e.isControlDown())) {
+            stacks.undo();        
+        
+        }
+    }
+    
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+       
+}
+
 

@@ -21,18 +21,17 @@ public class CommandsInvoker {
 	public void execute(Command any) {
 
 		any.execute();
-		if (any.isReversible())
+		if (any.isReversible()){
 			undoStack.push(any);
-
+                }
 	}
 	public void undo() {
 
-		if (!undoStack.isEmpty()) {
+		if (undoStack.isEmpty()==false) {
 			Command a = undoStack.pop();
 			redoStack.push(a);
-			a.undo();
-		}
-
+                        a.undo();
+                }
 	}
 
 	public void redo() {

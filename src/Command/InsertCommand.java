@@ -5,28 +5,35 @@
  */
 package Command;
 
+import java.awt.TextArea;
 import javax.swing.JTextArea;
 
 /**
  *
  * @author okann
  */
-public class NewCommand implements Command {
-    private JTextArea area;
-    private String old;
-    public NewCommand(JTextArea area){
-        this.area = area;
-        old = this.area.getText();
+public class InsertCommand implements Command{
+    private String a;
+    private JTextArea  b;
+    public InsertCommand(String a,JTextArea b){
+        this.a = a;
+        this.b = b;
+                
     }
     @Override
     public void execute() {
-        area.setText("");
+        b.append(a);
+        
     }
 
     @Override
     public void undo() {
-        area.setText(old);
+        String text = b.getText();
+        int lastIndex = text.lastIndexOf(" ");
+        text = text.substring(0,lastIndex);
+        b.setText(text);
     }
+
 
     @Override
     public boolean isReversible() {
