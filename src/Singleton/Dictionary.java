@@ -3,8 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Iterator;
+package Singleton;
 
+import Iterator.Implemention;
+import Iterator.StringCollection;
+import Iterator.StringIterator;
+import Iterator.StringTypeEnum;
+import Iterator.Word;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -14,30 +19,28 @@ import java.util.Scanner;
  *
  * @author okann
  */
-public class ImplementionTest {
-    public static void main(String[] args) {
+public class Dictionary {
+       private static StringIterator a = getDictionary("words.txt");
+       private Dictionary(){}
+       public static StringIterator getInstance(){
+        return a;
+   }
+       private static StringIterator getDictionary(String filename){
         Scanner sc2 = null;
         StringCollection text = new Implemention();
-        StringIterator baseIterator = text.iterator(StringTypeEnum.ALL);        
+        StringIterator baseIterator = text.iterator(StringTypeEnum.STRING);        
         try {
-        sc2 = new Scanner(new File("hahahaha.txt"));
+        sc2 = new Scanner(new File(filename));
         } catch (FileNotFoundException e) {
             e.printStackTrace();  
         }
-        ArrayList<Word> tome = null;
         while (sc2.hasNextLine()) {
             Scanner s2 = new Scanner(sc2.nextLine());
             while (s2.hasNext()) {
                 String s = s2.next();
-                text.addWord(new Word(s + " "));
+                text.addWord(new Word(s));
             }
-            text.addWord(new Word("\n"));
-        }
-        sc2.close();
-    		while (baseIterator.hasNext()) {
-			Word c = baseIterator.next();
-			System.out.print(c.toString());
-    }
-    }
+        }           
+       return baseIterator;
+       }
 }
-

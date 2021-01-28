@@ -5,10 +5,14 @@
  */
 package Visitor;
 
+import Iterator.Word;
+
 /**
  *
  * @author okann
  */
-public class Visitor {
-    
+public interface Visitor {
+    public void visit(Word word);
+    public void visit(String word);
+
 }
