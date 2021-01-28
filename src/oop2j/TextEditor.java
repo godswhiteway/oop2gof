@@ -11,17 +11,21 @@ import Command.InsertCommand;
 import Command.NewCommand;
 import Command.OpenCommand;
 import Command.SaveCommand;
+import State.Observer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -38,14 +42,17 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
     JMenuBar menuBar;
     JMenu fileMenu;
     JMenu editMenu;
+    JMenu snapshotMenu;
     JMenuItem newItem;
     JMenuItem openItem;
     JMenuItem saveItem;
     JMenuItem fixItem;
     JMenuItem changeWordItem;
     JMenuItem exitItem;
-    JMenuItem undoItem;
-    JMenuItem redoItem;
+    JMenuItem takesnapshotItem;
+    JMenuItem restoresnapshotItem;
+    JMenuItem proceedItem;    
+    JPopupMenu popupMenu;
     TextEditor(){
        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,6 +69,7 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         //menu kisimi
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
+        snapshotMenu = new JMenu("Snapshots");
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
@@ -78,18 +86,19 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         editMenu = new JMenu("Edit");
         fixItem = new JMenuItem("Fix Misspellings");
         changeWordItem = new JMenuItem("Change word");
-        undoItem = new JMenuItem("Undo");
-        redoItem = new JMenuItem("Redo");
-        undoItem.addActionListener(this);
-        redoItem.addActionListener(this);
+        takesnapshotItem = new JMenuItem("Take a Snapshot");
+        restoresnapshotItem = new JMenuItem("Restore from a snapshot");
+        takesnapshotItem.addActionListener(this);
+        restoresnapshotItem.addActionListener(this);
         editMenu.add(fixItem);
         editMenu.add(changeWordItem);
-        editMenu.add(undoItem);
-        editMenu.add(redoItem);
+        snapshotMenu.add(takesnapshotItem);
+        snapshotMenu.add(restoresnapshotItem);        
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
-
-
+        menuBar.add(snapshotMenu);
+        proceedItem = new JMenuItem("OK");
+        popupMenu = new JPopupMenu("Restore From Snapshot");
         //--
         this.setJMenuBar(menuBar);
         this.add(scrollPane);
@@ -125,10 +134,11 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         }else if(e.getSource()==newItem){
             NewCommand a = new NewCommand(textArea);
             stacks.execute(a);
-        }else if(e.getSource()==undoItem){
-            stacks.undo();
-        }else if(e.getSource()==redoItem){
-            stacks.redo();
+
+        }else if(e.getSource()==takesnapshotItem){
+            
+        }else if(e.getSource()==restoresnapshotItem){
+            popupMenu.setVisible(true);
         }
     }
 
@@ -157,7 +167,6 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
-       
 }
 
 
