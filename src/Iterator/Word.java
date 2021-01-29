@@ -46,6 +46,11 @@ public class Word{
             } 
         }
         return true;
+    }
+    public char[] getCharAarray(){
+        char[] first = cleanWord().toLowerCase().toCharArray();
+        Arrays.sort(first);
+        return first;
     }    
     @Override
     public String toString(){

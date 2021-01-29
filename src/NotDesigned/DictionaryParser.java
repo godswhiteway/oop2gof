@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Visitor;
+package NotDesigned;
 
 import Iterator.Implemention;
 import Iterator.StringCollection;
@@ -22,11 +22,8 @@ import java.util.Scanner;
  *
  * @author okann
  */
-public class DictionaryParser extends CheckSpelling {
+public class DictionaryParser{
     private static final String DICTIONARY_FILE = "words.txt";
-    static{
-        
-    }
     public static HashMap<Character, RangedWords> parseDict(String filename){
         HashMap<Character, RangedWords> parsed = new HashMap<>();
         StringIterator baseIterator = Dictionary.getInstance();
