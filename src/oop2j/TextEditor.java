@@ -6,6 +6,7 @@
 package oop2j;
 
 import Command.CommandsInvoker;
+import Command.DeleteCommand;
 import Command.ExitCommand;
 import Command.InsertCommand;
 import Command.NewCommand;
@@ -57,10 +58,9 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
     JMenuItem takesnapshotItem;
     JMenuItem restoresnapshotItem;
     HashMap<Character, RangedWords> dictionary = DictionaryParser.parseDict("words.txt");
-    
+
 
     TextEditor() {
-
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("TextEditor");
         this.setSize(800, 600);
@@ -71,6 +71,7 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
         scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(780, 550));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
         //menu kisimi
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -151,7 +152,7 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
             textArea.setText(originator.getState());
         } else if (e.getSource() == fixItem) {
             fixItemCommand a = new fixItemCommand(textArea,dictionary);
-            a.execute();
+            stacks.execute(a);
             }
         }
 
@@ -161,10 +162,11 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
     public void keyTyped(KeyEvent e) {
         String a = "";
         if (e.getKeyChar() == ' ') {
+            
             InsertCommand c = new InsertCommand(a, textArea);
             a = "";
             stacks.execute(c);
-        } else {
+        }else {
             a += e.getKeyChar();
         }
     }
@@ -174,6 +176,11 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
         if ((e.getKeyCode() == KeyEvent.VK_Z) && (e.isControlDown())) {
             stacks.undo();
 
+        }else if(e.getKeyCode()== KeyEvent.VK_BACK_SPACE){
+            System.out.println("girdi");
+            DeleteCommand c = new DeleteCommand(textArea);
+            stacks.execute(c);
+            
         }
     }
 

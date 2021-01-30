@@ -34,13 +34,5 @@ public class CommandsInvoker {
                 }
 	}
 
-	public void redo() {
 
-		if (!redoStack.isEmpty()) {
-			Command a = redoStack.pop();
-			undoStack.push(a);
-			a.execute();
-		}
-
-	}
 }

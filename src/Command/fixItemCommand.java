@@ -11,6 +11,8 @@ import ChainofResponsibility.ValidationChars;
 import ChainofResponsibility.ValidationLengths;
 import ChainofResponsibility.ValidationSingleTrans;
 import Iterator.Word;
+import Memento.CareTaker;
+import Memento.Originator;
 import NotDesigned.RangedWords;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +28,12 @@ public class fixItemCommand implements Command {
 
     private JTextArea main;
     private HashMap<Character, RangedWords> parsed;
-
-
+    private String old;
     public fixItemCommand(JTextArea main, HashMap<Character, RangedWords> dictionary) {
+
         this.main = main;
         this.parsed = dictionary;
+        this.old = main.getText();
     }
 
     @Override
@@ -80,11 +83,12 @@ public class fixItemCommand implements Command {
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+           
+            main.setText(old);
     }
 
     @Override
     public boolean isReversible() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 }

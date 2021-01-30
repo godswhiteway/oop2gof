@@ -5,36 +5,37 @@
  */
 package Command;
 
-import java.awt.TextArea;
+import Memento.CareTaker;
+import Memento.Originator;
 import javax.swing.JTextArea;
 
 /**
  *
  * @author okann
  */
-public class InsertCommand implements Command{
+public class DeleteCommand implements Command {
     private String a;
     private JTextArea  b;
-    public InsertCommand(String a,JTextArea b){
-        this.a = a;
+    private Originator originator;            
+    private CareTaker careTaker;        
+    
+    public DeleteCommand(JTextArea b){
+ 
         this.b = b;
-                
+        originator = new Originator();
+        careTaker = new CareTaker();
     }
     @Override
     public void execute() {
-        b.append(a);
-        
+            originator.setState(b.getText());
+            careTaker.add(originator.saveStateToMemento());
     }
 
     @Override
     public void undo() {
-        String text = b.getText();    
-        int lastIndex = text.lastIndexOf(" ");
-        text = text.substring(0,lastIndex);
-        b.setText(text);
-        
+            originator.getStateFromMemento(careTaker.get(0));
+            b.setText(originator.getState());
     }
-
 
     @Override
     public boolean isReversible() {
