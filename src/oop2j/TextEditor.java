@@ -177,7 +177,6 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
             stacks.undo();
 
         }else if(e.getKeyCode()== KeyEvent.VK_BACK_SPACE){
-            System.out.println("girdi");
             DeleteCommand c = new DeleteCommand(textArea);
             stacks.execute(c);
             
