@@ -5,33 +5,32 @@
  */
 package NotDesigned;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 /**
  *
  * @author okann
  */
-public class RangedWords implements Iterable<Object> {
-    private Object[] words;
+public class RangedWords implements Iterable<String> {
+    private String[] words;
 
-    public Object[] getWords() {
+    public String[] getWords() {
         return words;
     }
 
-    public void setWords(Object[] words) {
+    public void setWords(String[] words) {
         this.words = words;
     }
     private int currentSize;
     public RangedWords(Object[] words){
-        this.words = words;
+        this.words = objecttoString(words);
         this.currentSize = words.length;
     }
 
     @Override
-    public Iterator<Object> iterator(){
-        Iterator<Object> it = new Iterator<Object>() {
+    public Iterator<String> iterator(){
+        Iterator<String> it = new Iterator<String>() {
 
             private int currentIndex = 0;
 
@@ -41,7 +40,7 @@ public class RangedWords implements Iterable<Object> {
             }
 
             @Override
-            public Object next() {
+            public String next() {
                 return words[currentIndex++];
             }
 
@@ -52,6 +51,9 @@ public class RangedWords implements Iterable<Object> {
         };
         return it;
     }
-
+private String[] objecttoString(Object[] a){
+    String[] stringArray = Arrays.copyOf(a, a.length, String[].class);
+    return stringArray;
+}
 
 }

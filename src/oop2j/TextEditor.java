@@ -11,14 +11,18 @@ import Command.InsertCommand;
 import Command.NewCommand;
 import Command.OpenCommand;
 import Command.SaveCommand;
+import Command.fixItemCommand;
 import Memento.CareTaker;
 import Memento.Originator;
+import NotDesigned.DictionaryParser;
+import NotDesigned.RangedWords;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -33,8 +37,9 @@ import javax.swing.filechooser.FileSystemView;
  *
  * @author okann
  */
-public class TextEditor extends JFrame implements ActionListener,KeyListener {
-    CommandsInvoker stacks = new CommandsInvoker(); 
+public class TextEditor extends JFrame implements ActionListener, KeyListener {
+
+    CommandsInvoker stacks = new CommandsInvoker();
     Originator originator = new Originator();
     CareTaker careTaker = new CareTaker();
     JTextArea textArea;
@@ -51,18 +56,20 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
     JMenuItem exitItem;
     JMenuItem takesnapshotItem;
     JMenuItem restoresnapshotItem;
-    TextEditor(){
-       
+    HashMap<Character, RangedWords> dictionary = DictionaryParser.parseDict("words.txt");
+    
+
+    TextEditor() {
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("TextEditor");
-        this.setSize(800,600);
+        this.setSize(800, 600);
         this.setLayout(new FlowLayout());
-        this.setLocationRelativeTo(null);
         textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(780,550));
+        scrollPane.setPreferredSize(new Dimension(780, 550));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //menu kisimi
         menuBar = new JMenuBar();
@@ -88,10 +95,11 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         restoresnapshotItem = new JMenuItem("Restore from a snapshot");
         takesnapshotItem.addActionListener(this);
         restoresnapshotItem.addActionListener(this);
+        fixItem.addActionListener(this);
         editMenu.add(fixItem);
         editMenu.add(changeWordItem);
         snapshotMenu.add(takesnapshotItem);
-        snapshotMenu.add(restoresnapshotItem);        
+        snapshotMenu.add(restoresnapshotItem);
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(snapshotMenu);
@@ -99,60 +107,64 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
         this.setJMenuBar(menuBar);
         this.add(scrollPane);
         this.setVisible(true);
-            
-    }            
-    
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-    
+
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Choose destination.");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        if(e.getSource()==exitItem){
+        if (e.getSource() == exitItem) {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                ExitCommand a = new ExitCommand(this,textArea,jfc.getSelectedFile().getAbsolutePath());
+                ExitCommand a = new ExitCommand(this, textArea, jfc.getSelectedFile().getAbsolutePath());
                 stacks.execute(a);
-            }    
-        }else if(e.getSource()==openItem){
+            }
+        } else if (e.getSource() == openItem) {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
+                OpenCommand a = new OpenCommand(jfc.getSelectedFile().getAbsolutePath(), textArea);
                 this.setTitle(jfc.getSelectedFile().getName());
                 stacks.execute(a);
                 originator.setState(textArea.getText());
                 careTaker.add(originator.saveStateToMemento());
 
-            }    
-        }else if(e.getSource()==saveItem){
+            }
+        } else if (e.getSource() == saveItem) {
             int returnValue = jfc.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-            SaveCommand a = new SaveCommand(jfc.getSelectedFile().getAbsolutePath(),textArea);
-            stacks.execute(a);
+                SaveCommand a = new SaveCommand(jfc.getSelectedFile().getAbsolutePath(), textArea);
+                stacks.execute(a);
             }
-        }else if(e.getSource()==newItem){
+        } else if (e.getSource() == newItem) {
             NewCommand a = new NewCommand(textArea);
             stacks.execute(a);
 
-        }else if(e.getSource()==takesnapshotItem){
+        } else if (e.getSource() == takesnapshotItem) {
             originator.setState(textArea.getText());
             careTaker.add(originator.saveStateToMemento());
 
-
-        }else if(e.getSource()==restoresnapshotItem){
-                originator.getStateFromMemento(careTaker.get(0));
-                textArea.setText(originator.getState());
+        } else if (e.getSource() == restoresnapshotItem) {
+            originator.getStateFromMemento(careTaker.get(0));
+            textArea.setText(originator.getState());
+        } else if (e.getSource() == fixItem) {
+            fixItemCommand a = new fixItemCommand(textArea,dictionary);
+            a.execute();
+            }
         }
-    }
+
+    
 
     @Override
     public void keyTyped(KeyEvent e) {
         String a = "";
-        if(e.getKeyChar() == ' '){
-            InsertCommand c = new InsertCommand(a,textArea);
+        if (e.getKeyChar() == ' ') {
+            InsertCommand c = new InsertCommand(a, textArea);
             a = "";
             stacks.execute(c);
-        }else{
+        } else {
             a += e.getKeyChar();
         }
     }
@@ -160,16 +172,13 @@ public class TextEditor extends JFrame implements ActionListener,KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if ((e.getKeyCode() == KeyEvent.VK_Z) && (e.isControlDown())) {
-            stacks.undo();        
-        
+            stacks.undo();
+
         }
     }
-    
 
     @Override
     public void keyReleased(KeyEvent e) {
 
     }
 }
-
-
