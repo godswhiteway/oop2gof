@@ -14,6 +14,7 @@ import Iterator.Word;
 public class ValidationSingleTrans extends ProceedProcess{
 
     @Override
+    //kelimelerin tek harf hatası olup olmadığını kontrol eder.
     public boolean check(Word a, Word b) {
         for(int i=0;i<a.getWordself().length();i++){
             if(a.getWordself().toLowerCase().charAt(i)!=b.getWordself().toLowerCase().charAt(i)){

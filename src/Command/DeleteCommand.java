@@ -33,6 +33,8 @@ public class DeleteCommand implements Command {
 
     @Override
     public void undo() {
+            //Memento tasarım deseni kullanılarak silinen karakterlerin
+            //geri alımı sağlandı.
             originator.getStateFromMemento(careTaker.get(0));
             b.setText(originator.getState());
     }

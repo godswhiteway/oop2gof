@@ -5,6 +5,8 @@
  */
 package Command;
 
+import Memento.CareTaker;
+import Memento.Originator;
 import java.awt.TextArea;
 import javax.swing.JTextArea;
 
@@ -15,23 +17,28 @@ import javax.swing.JTextArea;
 public class InsertCommand implements Command{
     private String a;
     private JTextArea  b;
+    private Originator originator;            
+    private CareTaker careTaker;  
     public InsertCommand(String a,JTextArea b){
         this.a = a;
         this.b = b;
+        originator = new Originator();
+        careTaker = new CareTaker();
                 
     }
     @Override
     public void execute() {
+        originator.setState(b.getText());
+        careTaker.add(originator.saveStateToMemento());
         b.append(a);
         
     }
 
     @Override
     public void undo() {
-        String text = b.getText();    
-        int lastIndex = text.lastIndexOf(" ");
-        text = text.substring(0,lastIndex);
-        b.setText(text);
+        //yazılanları geri almaya sağlayan döngü.
+            originator.getStateFromMemento(careTaker.get(0));
+            b.setText(originator.getState());
         
     }
 
