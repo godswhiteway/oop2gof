@@ -32,9 +32,8 @@ public class DeleteCommand implements Command {
     }
 
     @Override
+    //Usage of memento design pattern for undo process.
     public void undo() {
-            //Memento tasarım deseni kullanılarak silinen karakterlerin
-            //geri alımı sağlandı.
             originator.getStateFromMemento(careTaker.get(0));
             b.setText(originator.getState());
     }

@@ -43,9 +43,10 @@ import javax.swing.filechooser.FileSystemView;
  */
 public class TextEditor extends JFrame implements ActionListener, KeyListener {
 
-    CommandsInvoker stacks = new CommandsInvoker();
-    Originator originator = new Originator();
-    CareTaker careTaker = new CareTaker();
+    CommandsInvoker stacks = new CommandsInvoker();//command stacks
+    Originator originator = new Originator();//memento
+    CareTaker careTaker = new CareTaker();//memento
+    //----------------------------------------------------------------------
     JTextArea textArea;
     JScrollPane scrollPane;
     JMenuBar menuBar;
@@ -56,17 +57,16 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
     JMenuItem openItem;
     JMenuItem saveItem;
     JMenuItem fixItem;
-
     JMenuItem exitItem;
     JMenuItem takesnapshotItem;
     JMenuItem restoresnapshotItem;
     JTextArea inputlabel;
     JTextArea inputlabel2;
     JButton okbutton;
-
     HashMap<Character, RangedWords> dictionary = DictionaryParser.parseDict("words.txt");
-
+//---------------------------------------------------------------------------------------------
     TextEditor() {
+        //GUI Design and implementing listeners
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("TextEditor");
         this.setSize(1000, 600);
@@ -77,12 +77,10 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
         scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(new Dimension(780, 550));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        //=================================================================
-
         JLabel label = new JLabel("Change to");
         label.setSize(30, 40);
         label.setLocation(80, 45);
-        this.okbutton = new JButton("OK");
+        this.okbutton = new JButton("Change");
         okbutton.setSize(100, 60);
         okbutton.setLocation(95, 150);
         okbutton.addActionListener(this);
@@ -96,9 +94,6 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
         inputlabel2.setWrapStyleWord(true);
         inputlabel2.setSize(60, 20);
         inputlabel2.setLocation(195, 5);
-
-        //=================================================================
-        //menu kisimi
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
         snapshotMenu = new JMenu("Snapshots");
@@ -117,20 +112,19 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
         fileMenu.add(exitItem);
         editMenu = new JMenu("Edit");
         fixItem = new JMenuItem("Fix Misspellings");
-
         takesnapshotItem = new JMenuItem("Take a Snapshot");
         restoresnapshotItem = new JMenuItem("Restore from a snapshot");
         takesnapshotItem.addActionListener(this);
         restoresnapshotItem.addActionListener(this);
         fixItem.addActionListener(this);
         editMenu.add(fixItem);
-
         snapshotMenu.add(takesnapshotItem);
         snapshotMenu.add(restoresnapshotItem);
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(snapshotMenu);
-        //--
+        //------------------------------
+        //adding components
         this.setJMenuBar(menuBar);
         this.add(scrollPane);
         this.add(okbutton);
@@ -184,7 +178,6 @@ public class TextEditor extends JFrame implements ActionListener, KeyListener {
             fixItemCommand a = new fixItemCommand(textArea, dictionary);
             stacks.execute(a);
         } else if (e.getSource() == okbutton) {
-            System.out.println("girmiyo");
             ChangeWordCommand a = new ChangeWordCommand(textArea, inputlabel, inputlabel2);
             stacks.execute(a);
         }

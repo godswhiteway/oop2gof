@@ -23,8 +23,9 @@ public class FixSingleTr {
         String temp2 = "";
         
         if (valid.check(str1, str2)) {
-            //Aşağıdaki döngüde kelimenin herhangi bir özel karakter içermeyen kısımları 
-            //büyük karakter duyarlılığı hesaplanarak geçiciye eklenir.
+            //Changes the word respectfully,
+            //ex: AlYl ==> AlLy
+            
             String temp = str1.cleanWord();
             for (int i = 0; i < str2.getWordself().length(); i++) {
                 if (temp.toLowerCase().charAt(i) == str2.getWordself().charAt(i)) {
@@ -35,7 +36,7 @@ public class FixSingleTr {
                     temp2 += str2.getWordself().charAt(i);
                 }
             }
-            //geriye kalan noktalama işaretleri eklenir.
+            //addition for non-letter chars
             char[] list = {'+', ',', '/', '.', '-', ';', ':', '?', '!', '(', ')', '*', '$'};
             for (int y = 0; y < list.length; y++) {
                 if (str1.getWordself().toLowerCase().substring(str1.cleanWord().length(), str1.cleanWord().length() + 1).charAt(0) == list[y]) {

@@ -14,7 +14,7 @@ import Iterator.Word;
 public class ValidationLengths extends ProceedProcess{
 
     @Override
-    //kelimelerin özel karakter olmadan uzunluklarını kontrol eder.
+    //checks words lenghts without non-letter chars.
     public boolean check(Word a, Word b) {
         if(a.cleanWord().length()!=b.cleanWord().length()){
             return false;

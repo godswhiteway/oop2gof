@@ -12,6 +12,7 @@ import java.util.Iterator;
  *
  * @author okann
  */
+//This class for containing the parsed dictionary lists.
 public class RangedWords implements Iterable<String> {
     private String[] words;
 

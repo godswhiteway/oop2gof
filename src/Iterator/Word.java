@@ -24,7 +24,7 @@ public class Word{
     }
     
        
-    public Word(String aString){
+    public Word(String aString){//decides int or string
        wordself = aString;
        if(isInteger(aString)){
            TYPE = StringTypeEnum.INT;
@@ -47,7 +47,7 @@ public class Word{
         }
         return true;
     }
-    public char[] getCharAarray(){
+    public char[] getCharAarray(){//return words chars
         char[] first = cleanWord().toLowerCase().toCharArray();
         Arrays.sort(first);
         return first;
@@ -56,7 +56,7 @@ public class Word{
     public String toString(){
         return getWordself();
     }
-    public String cleanWord(){
+    public String cleanWord(){//returns without whitespaces and non-letter chars.
         return getWordself().replaceAll("[^\\w-]", "");
     }
 }

@@ -27,6 +27,7 @@ public class InsertCommand implements Command{
                 
     }
     @Override
+    //Usage of memento design pattern for execute process.
     public void execute() {
         originator.setState(b.getText());
         careTaker.add(originator.saveStateToMemento());
@@ -36,7 +37,7 @@ public class InsertCommand implements Command{
 
     @Override
     public void undo() {
-        //yazılanları geri almaya sağlayan döngü.
+            //Usage of memento design pattern for undo process.
             originator.getStateFromMemento(careTaker.get(0));
             b.setText(originator.getState());
         

@@ -11,7 +11,7 @@ package oop2j;
  */
 public class main {
     public static void main(String[] args){
-         TextEditor a = new TextEditor();
+         TextEditor a = new TextEditor();//runner
 
     }
 }

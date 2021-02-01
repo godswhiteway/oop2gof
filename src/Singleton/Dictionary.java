@@ -19,6 +19,7 @@ import java.util.Scanner;
  *
  * @author okann
  */
+//To assure only one and same instance of dictionary every time.
 public class Dictionary {
        private static StringIterator a = getDictionary("words.txt");
        private Dictionary(){}

@@ -38,10 +38,10 @@ public class fixItemCommand implements Command {
 
     @Override
     public void execute() {
-      FixSingleTr c = new FixSingleTr();
-      ProceedProcess d = new ValidationLengths();
-      d.linkWith(new ValidationChars()).linkWith(new ValidationSingleTrans());
-      c.setProceedProcess(d);
+      FixSingleTr c = new FixSingleTr();//chainofresponsibility creator
+      ProceedProcess d = new ValidationLengths();//link procecss
+      d.linkWith(new ValidationChars()).linkWith(new ValidationSingleTrans());//link procecss
+      c.setProceedProcess(d);//link procecss
         String text = main.getText();
         ArrayList<String> arrList = new ArrayList<>(Arrays.asList(text));
         ArrayList<Word> words = new ArrayList<>();
@@ -50,10 +50,10 @@ public class fixItemCommand implements Command {
                 Scanner s2 = new Scanner(word);
                 while (s2.hasNext()) {
                     String y = s2.next();
-                    words.add(new Word(y + " "));
+                    words.add(new Word(y + " "));//exporting from text area word by word
                     
                     if(s2.hasNext() == false){
-                        words.add(new Word("\n"));
+                        words.add(new Word("\n"));//exporting from text area word by word
                     }
                 }
             }
@@ -62,9 +62,9 @@ public class fixItemCommand implements Command {
         for(Word a:words){
             for(int i=0;i<a.cleanWord().length();i++){
                 for(String wordarray : parsed.get(a.cleanWord().toLowerCase().charAt(i)).getWords()){
-                String tmp = c.fix(a, new Word(wordarray));
+                String tmp = c.fix(a, new Word(wordarray));//checking for singletransposition
                 if(!"".equals(tmp)){
-                    a.setWordself(tmp + " ");
+                    a.setWordself(tmp + " ");//when statement is true change the words string.
                     
                 }
 

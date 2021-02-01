@@ -33,29 +33,29 @@ public class ChangeWordCommand implements Command {
         String text = main.getText();
         ArrayList<String> arrList = new ArrayList<>(Arrays.asList(text));
         ArrayList<Word> words = new ArrayList<>();
-        //birleşik stringi kelimelere parçalayan döngü
+        
         for (String line : arrList) {
             for (String word : line.split("\\r?\\n")) {
                 Scanner s2 = new Scanner(word);
                 while (s2.hasNext()) {
                     String y = s2.next();
-                    words.add(new Word(y + " "));
+                    words.add(new Word(y + " "));//exporting from text area word by word
 
                     if (s2.hasNext() == false) {
-                        words.add(new Word("\n"));
+                        words.add(new Word("\n"));//exporting from text area word by word
                     }
                 }
             }
         }
     String newtext = "";
-    //kelime değiştirme kısmı
+    
     for(Word mainword : words){
         if(mainword.cleanWord().toLowerCase().equals(word.getText().toLowerCase())){
-            mainword.setWordself(changeto.getText());
+            mainword.setWordself(changeto.getText());//change process.
         }
-    newtext += mainword.getWordself();
+    newtext += mainword.getWordself();//adding to temp string
     }
-    main.setText(newtext);
+    main.setText(newtext);//setting textarea changed text
     }
 
     @Override

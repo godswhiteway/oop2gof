@@ -23,6 +23,7 @@ public class OpenCommand implements Command{
                 this.main = main;
 	}
     @Override
+    //fill the textarea with txt file
     public void execute() {
         String text = "";
         File f = new File(filename);
@@ -39,6 +40,7 @@ public class OpenCommand implements Command{
 }
 
     @Override
+    
     public void undo() {
         main.setText("");
     }

@@ -22,6 +22,7 @@ import java.util.Scanner;
  *
  * @author okann
  */
+//a class for dictionary parsing for the speeding process.
 public class DictionaryParser{
     private static final String DICTIONARY_FILE = "words.txt";
     public static HashMap<Character, RangedWords> parseDict(String filename){
@@ -31,7 +32,7 @@ public class DictionaryParser{
         Character tmp2 = ' ';
         while(baseIterator.hasNext()){
             String tmp = baseIterator.next().cleanWord().toLowerCase();
-            if(!parsed.containsKey(tmp.charAt(0))){
+            if(!parsed.containsKey(tmp.charAt(0))){//checks the key is already there
                 if(tmp2 != tmp.charAt(0)){
                    
                     parsed.put(tmp2, new RangedWords(dictWords.toArray()));

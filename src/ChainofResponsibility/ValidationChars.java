@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class ValidationChars extends ProceedProcess{
 
     @Override
-    //kelimelerin aynı karakterlere sahip olup olmadığını kontrol eder.
+    //checks are the compared words have the same chars?
     public boolean check(Word a, Word b) {   
         int counter = 0;
         for(int i =0 ; i<a.cleanWord().length();i++){
